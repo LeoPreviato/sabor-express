@@ -12,7 +12,7 @@ print("2 - Listar Restaurantes")
 print("3 - Ativar/Desativar Restaurante")
 print("4 - Sair do Programa\n")
 
-opcao_escolhida = input("Escolha uma opção: ")
+opcao_escolhida = int(input("Escolha uma opção: "))
 
 if opcao_escolhida == 1:
     print("Cadastrar restaurante")
