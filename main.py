@@ -15,14 +15,15 @@ def exibir_opcoes():
     print("1 - Cadastrar Restaurante")
     print("2 - Listar Restaurantes")
     print("3 - Alternar estado do Restaurante")
-    print("4 - Sair do Programa\n")
+    print("4 - Excluir Restaurante")
+    print("5 - Sair do Programa\n")
 
 def finalizar_app():
     exibir_subtitulo("Finalizando o app")
 
 
 def opcao_invalida():
-    print("Opção inválida\n")
+    print("\nOpção inválida")
     voltar_menu_principal()
 
 def escolher_opcao():
@@ -36,6 +37,8 @@ def escolher_opcao():
         elif opcao_escolhida == 3:
             alternar_estado_restaurante()
         elif opcao_escolhida == 4:
+            excluir_restaurante()
+        elif opcao_escolhida == 5:
             finalizar_app()
         else:
             opcao_invalida()

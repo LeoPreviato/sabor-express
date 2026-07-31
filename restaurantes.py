@@ -49,4 +49,31 @@ def alternar_estado_restaurante():
     voltar_menu_principal()
     
 def excluir_restaurante():
-    pass
+    exibir_subtitulo("Excluir Restaurante")
+    nome_restaurante = input("Digite o nome do restaurante que deseja excluir: ")
+    restaurante_encontrado = None
+    
+    for restaurante in restaurantes:
+        if nome_restaurante == restaurante["nome"]:
+            restaurante_encontrado = restaurante
+            break
+        
+    if restaurante_encontrado:
+        while True:
+            confirmacao = input(
+                f"\nQuer continuar com a exclusão do restaurante '{restaurante_encontrado['nome']}'? (s/n): "
+                ).lower().strip()
+            if confirmacao == 's':
+                restaurantes.remove(restaurante_encontrado)
+                print(f"\nO restaurante '{restaurante_encontrado['nome']}' foi excluido com sucesso.")
+                break
+            elif confirmacao == 'n':
+                print(f"\nA exclusão do restaurante '{restaurante_encontrado['nome']}' foi cancelada.")
+                break
+            else:
+                print("\nERRO: Digite (s/n)")
+                continue
+    else:
+        print("Restaurante não encontrado.")
+        
+    voltar_menu_principal()
