@@ -1,79 +1,111 @@
 from utils import *
-
-restaurantes = [{"nome":"Madeiro", "categoria":"Lanches", "ativo":False},
-                {"nome":"Pizza Suprema", "categoria":"Italiana", "ativo":True},
-                {"nome":"Praça", "categoria":"Japonesa", "ativo":False}]
+from database import *
 
 def cadastrar_novo_restaurante():
     exibir_subtitulo("Cadastro de novos restaurantes")
     
     nome_do_restaurante = input("Digite o nome do restaurante que deseja cadastrar: ")
     categoria = input(f"Digite o nome da categoria do restaurante {nome_do_restaurante}: ")
-    dados_do_restaurante = {"nome":nome_do_restaurante, "categoria":categoria, "ativo":False}
-    restaurantes.append(dados_do_restaurante)
+    
+    conexao = conectar()
+    if conexao is None:
+        return
+    cursor = conexao.cursor()
+    cursor.execute(
+        "INSERT INTO restaurantes (nome, categoria, ativo) VALUES (%s, %s, %s)",
+        (nome_do_restaurante, categoria, False)
+    )
+    conexao.commit()
+    cursor.close()
+    conexao.close()
+    
     print(f"\nO restaurante '{nome_do_restaurante}' foi cadastrado com sucesso!")
     voltar_menu_principal()
     
 def listar_restaurantes():
     exibir_subtitulo("Listando restaurantes")
     
+    conexao = conectar()
+    if conexao is None:
+        return
+    cursor = conexao.cursor()
+    cursor.execute("SELECT nome, categoria, ativo FROM restaurantes")
+    resultado = cursor.fetchall()
+    
     print(f"{'Nome do Restaurante'.ljust(22)} | {'Categoria'.ljust(20)} | Status")
     print("-" * 58)
-    for restaurante in restaurantes:
-        nomes_restaurantes = restaurante["nome"]
-        categoria_restaurante = restaurante["categoria"]
-        status_restaurante = "Ativado" if restaurante["ativo"] else "Desativado"
-        print(f"- {nomes_restaurantes.ljust(20)} | {categoria_restaurante.ljust(20)} | {status_restaurante}")
+    for linha in resultado:
+        nome, categoria, ativo = linha
+        status_restaurante = "Ativado" if ativo else "Desativado"
+        print(f"- {nome} | {categoria} | {status_restaurante}")
     
+    cursor.close()
+    conexao.close()
     voltar_menu_principal()
     
 def alternar_estado_restaurante():
     exibir_subtitulo("Alternando estado do restaurante")
     nome_restaurante = input("Digite o nome do restaurante que deseja alternar o estado: ")
-    restaurante_encontrado = False
     
-    for restaurante in restaurantes:
-        if nome_restaurante == restaurante["nome"]:
-            restaurante_encontrado = True
-            restaurante["ativo"] = not restaurante["ativo"]
-            mensagem = (
-                f"O restaurante {nome_restaurante} foi ativado com sucesso"
-                if restaurante["ativo"]
-                else f"O restaurante {nome_restaurante} foi desativado com sucesso"
-            )
-            print(mensagem)
-
-    if not restaurante_encontrado:
+    conexao = conectar()
+    if conexao is None:
+        return
+    cursor = conexao.cursor()
+    
+    cursor.execute("SELECT nome FROM restaurantes WHERE nome = %s", (nome_restaurante,))
+    resultado = cursor.fetchone()
+    
+    if resultado is None:
         print(f"O restaurante '{nome_restaurante}' não foi encontrado")
+    else:
+        cursor.execute("UPDATE restaurantes SET ativo = NOT ativo WHERE nome = %s", (nome_restaurante,))
+        conexao.commit()
+        
+        cursor.execute("SELECT ativo FROM restaurantes WHERE nome = %s", (nome_restaurante, ))
+        ativo_atualizado = cursor.fetchone()[0]
+        
+        mensagem = (
+            f"O restaurante '{nome_restaurante}' foi ativado com sucesso"
+            if ativo_atualizado
+            else f"O restaurante '{nome_restaurante}' foi desativado com sucesso"
+        )
+        print(mensagem)
     
+    cursor.close()
+    conexao.close()
     voltar_menu_principal()
     
 def excluir_restaurante():
     exibir_subtitulo("Excluir Restaurante")
     nome_restaurante = input("Digite o nome do restaurante que deseja excluir: ")
-    restaurante_encontrado = None
     
-    for restaurante in restaurantes:
-        if nome_restaurante == restaurante["nome"]:
-            restaurante_encontrado = restaurante
-            break
-        
-    if restaurante_encontrado:
+    conexao = conectar()
+    if conexao is None:
+        return
+    cursor = conexao.cursor()
+    
+    cursor.execute("SELECT nome FROM restaurantes WHERE nome = %s", (nome_restaurante,))
+    resultado = cursor.fetchone()
+    
+    if resultado is None:
+        print(f"O restaurante '{nome_restaurante}' não foi encontrado")
+    else:
         while True:
             confirmacao = input(
-                f"\nQuer continuar com a exclusão do restaurante '{restaurante_encontrado['nome']}'? (s/n): "
+                f"Quer continuar a exclusão do restaurante '{nome_restaurante}'? (s/n): "
                 ).lower().strip()
             if confirmacao == 's':
-                restaurantes.remove(restaurante_encontrado)
-                print(f"\nO restaurante '{restaurante_encontrado['nome']}' foi excluido com sucesso.")
+                cursor.execute("DELETE FROM restaurantes WHERE nome = %s", (nome_restaurante,))
+                conexao.commit()
+                print(f"\nO restaurante '{nome_restaurante}' foi excluido com sucesso.")
                 break
             elif confirmacao == 'n':
-                print(f"\nA exclusão do restaurante '{restaurante_encontrado['nome']}' foi cancelada.")
+                print(f"\nA exclusão do restaurante '{nome_restaurante}' foi cancelada.")
                 break
             else:
                 print("\nERRO: Digite (s/n)")
                 continue
-    else:
-        print("Restaurante não encontrado.")
-        
+    
+    cursor.close()
+    conexao.close()
     voltar_menu_principal()
