@@ -2,7 +2,7 @@ from utils import *
 from database import *
 
 def cadastrar_novo_restaurante():
-    exibir_subtitulo("Cadastro de novos restaurantes")
+    exibir_subtitulo("Cadastro de novos Restaurantes")
     
     nome_do_restaurante = input("Digite o nome do restaurante que deseja cadastrar: ")
     categoria = input(f"Digite o nome da categoria do restaurante {nome_do_restaurante}: ")
@@ -19,11 +19,11 @@ def cadastrar_novo_restaurante():
     cursor.close()
     conexao.close()
     
-    print(f"\nO restaurante '{nome_do_restaurante}' foi cadastrado com sucesso!")
+    print(f"\n[green]O restaurante '{nome_do_restaurante}' foi cadastrado com sucesso![/green]")
     voltar_menu_principal()
     
 def listar_restaurantes():
-    exibir_subtitulo("Listando restaurantes")
+    exibir_subtitulo("Listando Restaurantes")
     
     conexao = conectar()
     if conexao is None:
@@ -32,19 +32,25 @@ def listar_restaurantes():
     cursor.execute("SELECT nome, categoria, ativo FROM restaurantes")
     resultado = cursor.fetchall()
     
-    print(f"{'Nome do Restaurante'.ljust(22)} | {'Categoria'.ljust(20)} | Status")
-    print("-" * 58)
+    tabela = Table(width=60)
+    
+    tabela.add_column("Nome")
+    tabela.add_column("Categoria")
+    tabela.add_column("Status")
+    
     for linha in resultado:
         nome, categoria, ativo = linha
-        status_restaurante = "Ativado" if ativo else "Desativado"
-        print(f"- {nome} | {categoria} | {status_restaurante}")
+        status = "[green]Ativado[/green]" if ativo else "[red]Desativado[/red]"
+        tabela.add_row(nome, categoria, status)
+        
+    console.print(tabela)
     
     cursor.close()
     conexao.close()
     voltar_menu_principal()
     
 def alternar_estado_restaurante():
-    exibir_subtitulo("Alternando estado do restaurante")
+    exibir_subtitulo("Alternando estado do Restaurante")
     nome_restaurante = input("Digite o nome do restaurante que deseja alternar o estado: ")
     
     conexao = conectar()
@@ -56,7 +62,7 @@ def alternar_estado_restaurante():
     resultado = cursor.fetchone()
     
     if resultado is None:
-        print(f"O restaurante '{nome_restaurante}' não foi encontrado")
+        print(f"\nO restaurante '{nome_restaurante}' não foi encontrado")
     else:
         cursor.execute("UPDATE restaurantes SET ativo = NOT ativo WHERE nome = %s", (nome_restaurante,))
         conexao.commit()

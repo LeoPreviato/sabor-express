@@ -1,4 +1,10 @@
 import os
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+from rich.text import Text
+
+console = Console()
 
 def voltar_menu_principal():
     input("\nDigite uma tecla para voltar ao menu principal ")
@@ -7,7 +13,6 @@ def voltar_menu_principal():
 
 def exibir_subtitulo(texto):
     os.system('cls' if os.name == 'nt' else 'clear')
-    print("=" * 30)
-    print(texto.center(30))
-    print("=" * 30)
+    titulo = Text(texto, justify="center")
+    console.print(Panel(titulo, width=60))
     print()

@@ -12,11 +12,16 @@ def exibir_nome_do_programa():
 """)
 
 def exibir_opcoes():
-    print("1 - Cadastrar Restaurante")
-    print("2 - Listar Restaurantes")
-    print("3 - Alternar estado do Restaurante")
-    print("4 - Excluir Restaurante")
-    print("5 - Sair do Programa\n")
+    titulo = Text("Menu de opções", style="bold")
+    
+    menu_opcao = Text(
+"""1 - Cadastrar Restaurantes
+2 - Listar Restaurantes
+3 - Alternar estado do Restaurante
+4 - Excluir Restaurante
+5 - Sair do programa""")
+    
+    console.print(Panel(menu_opcao, title=titulo, width=40))
 
 def finalizar_app():
     exibir_subtitulo("Finalizando o app")
