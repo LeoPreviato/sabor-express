@@ -71,9 +71,9 @@ def alternar_estado_restaurante():
         ativo_atualizado = cursor.fetchone()[0]
         
         mensagem = (
-            f"O restaurante '{nome_restaurante}' foi ativado com sucesso"
+            f"O restaurante '{nome_restaurante}' foi [green]ativado[/] com sucesso"
             if ativo_atualizado
-            else f"O restaurante '{nome_restaurante}' foi desativado com sucesso"
+            else f"O restaurante '{nome_restaurante}' foi [red]desativado[/] com sucesso"
         )
         print(mensagem)
     
@@ -94,7 +94,7 @@ def excluir_restaurante():
     resultado = cursor.fetchone()
     
     if resultado is None:
-        print(f"O restaurante '{nome_restaurante}' não foi encontrado")
+        print(f"O restaurante '{nome_restaurante}' [red]não foi encontrado[/]")
     else:
         while True:
             confirmacao = input(
@@ -103,13 +103,13 @@ def excluir_restaurante():
             if confirmacao == 's':
                 cursor.execute("DELETE FROM restaurantes WHERE nome = %s", (nome_restaurante,))
                 conexao.commit()
-                print(f"\nO restaurante '{nome_restaurante}' foi excluido com sucesso.")
+                print(f"\nO restaurante '{nome_restaurante}' foi [green]excluido[/] com sucesso.")
                 break
             elif confirmacao == 'n':
-                print(f"\nA exclusão do restaurante '{nome_restaurante}' foi cancelada.")
+                print(f"\nA exclusão do restaurante '{nome_restaurante}' foi [red]cancelada[/].")
                 break
             else:
-                print("\nERRO: Digite (s/n)")
+                print("\n[red]ERRO[/]: Digite (s/n)")
                 continue
     
     cursor.close()
