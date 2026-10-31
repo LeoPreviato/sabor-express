@@ -12,7 +12,7 @@ def cadastrar_novo_restaurante():
         return
     cursor = conexao.cursor()
     cursor.execute(
-        "INSERT INTO restaurantes (nome, categoria, ativo) VALUES (%s, %s, %s)",
+        "INSERT INTO restaurantes (nome, categoria, ativo) VALUES (?, ?, ?)",
         (nome_do_restaurante, categoria, False)
     )
     conexao.commit()
@@ -58,16 +58,16 @@ def alternar_estado_restaurante():
         return
     cursor = conexao.cursor()
     
-    cursor.execute("SELECT nome FROM restaurantes WHERE nome = %s", (nome_restaurante,))
+    cursor.execute("SELECT nome FROM restaurantes WHERE nome = ?", (nome_restaurante,))
     resultado = cursor.fetchone()
     
     if resultado is None:
         print(f"\nO restaurante '{nome_restaurante}' não foi encontrado")
     else:
-        cursor.execute("UPDATE restaurantes SET ativo = NOT ativo WHERE nome = %s", (nome_restaurante,))
+        cursor.execute("UPDATE restaurantes SET ativo = NOT ativo WHERE nome = ?", (nome_restaurante,))
         conexao.commit()
         
-        cursor.execute("SELECT ativo FROM restaurantes WHERE nome = %s", (nome_restaurante, ))
+        cursor.execute("SELECT ativo FROM restaurantes WHERE nome = ?", (nome_restaurante, ))
         ativo_atualizado = cursor.fetchone()[0]
         
         mensagem = (
@@ -90,7 +90,7 @@ def excluir_restaurante():
         return
     cursor = conexao.cursor()
     
-    cursor.execute("SELECT nome FROM restaurantes WHERE nome = %s", (nome_restaurante,))
+    cursor.execute("SELECT nome FROM restaurantes WHERE nome = ?", (nome_restaurante,))
     resultado = cursor.fetchone()
     
     if resultado is None:
@@ -101,7 +101,7 @@ def excluir_restaurante():
                 f"Quer continuar a exclusão do restaurante '{nome_restaurante}'? (s/n): "
                 ).lower().strip()
             if confirmacao == 's':
-                cursor.execute("DELETE FROM restaurantes WHERE nome = %s", (nome_restaurante,))
+                cursor.execute("DELETE FROM restaurantes WHERE nome = ?", (nome_restaurante,))
                 conexao.commit()
                 print(f"\nO restaurante '{nome_restaurante}' foi [green]excluido[/] com sucesso.")
                 break
