@@ -74,7 +74,11 @@ Na primeira execução, o arquivo `sabor_express.db` é criado automaticamente n
 ```
  
 ## 🔜 Próximos passos
-- Desenvolver um bot para os pratos dos restaurantes, usando a tabela `pratos` que já existe no banco de dados (cada prato ligado a um restaurante, com nome, preço e descrição).
+- Desenvolver um bot de atendimento para os pratos dos restaurantes, usando a tabela `pratos` que já existe no banco de dados (cada prato ligado a um restaurante, com nome, preço e descrição). O fluxo planejado é:
+  1. O cliente escolhe um dos restaurantes cadastrados.
+  2. O cliente pergunta quais pratos aquele restaurante oferece, e o bot lista as opções.
+  3. O cliente pode pedir a descrição de qualquer prato, e o bot responde com os detalhes cadastrados.
+  4. Ao escolher um prato, o bot exibe uma mensagem de retorno para o cliente.
 
 ## 📚 Aprendizados
 Neste projeto pratiquei:
